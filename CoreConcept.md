@@ -242,3 +242,9 @@ kubectl get pods mynginx -o json | less -> To get POD Description in JSON Format
 kubectl get pods mynginx -o yaml| less -> To get POD Description in JSON Format
 
 kubectl explain pods.spec.enableServiceLinks
+
+
+
+
+
+https://github.com/avinashzen123/ckad/tree/master
