@@ -211,8 +211,36 @@ fe00::2 ip6-allrouters
 Entries added by HostAliases.
 192.168.1.140   test1.local     test2.local
 
-busybox-test
+# Resource limitation
+By default, a pod will use as much CPU and memory as necessary to it work. This can be managed by using Memory/CPU request and limts in 'pod.spec.containers.resources'
 
+A request is an initial request for resource.
+A limit defines the upper threshold of resources a Pod can use.
+
+CPU Limits are expressed in millicore or millicpu, 1/1000 of a CPU Core so 500 millicore is 0.5CPU
+
+When being scheduled the kube-scheduler ensures that the node running the Pod hs all requested resource available.
+If a Pod with resource limits can not be scheduled, it will show a status of Pending.
+
+we can use 'kubectl set resource ...' to apply resource limit to running applicaiton in deployments.
+
+**Quota**
+* Quota are restrictions that are applied to namespace.
+* If quota are set on a namespace, application started in that namespace must have resource
+
+> kubectl create ns restricted
+  kubectl create quota -n restricted --hard=cpu=2,memory=1G,pod=3
+
+```yaml
+    spec:
+      containers:
+      - name: naginx-cont
+        image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+```
 
 # Cleaning up resource:
 - kubectl delete all
@@ -223,11 +251,6 @@ busybox-test
 
 
 <hr/>
-
-
-
-
-
 
      containers:
       - name: fibonacci

@@ -153,6 +153,12 @@ spec:
     targetPort: 8080
     name: tomcatport 
 ```
+
+or 
+
+kubectl expose deploy myweb --type=NodePort --port=80 --target-port=80
+
+
 **kubectl get service**
 NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)               AGE   
 kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP               5m34s 
@@ -253,6 +259,6 @@ Create deployment
 Create service 
 kubectl create ingress nginx-ingress --rule="/=nginxsvc:80" --rule="/hello=nginxdep:8080"
 
-
+#
 
 -- https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#port-forward
