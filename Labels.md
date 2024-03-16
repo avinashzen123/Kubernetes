@@ -19,6 +19,8 @@ Key have two segment : an optional prefix and name , separated by slash (/)
     * Three kind of operators are submitted in 'notin' and 'exists'   
         e.g. environment in (production, qa)
 
+> kubectl run hazelcast --image=hazelcast/hazelcast --labels="app=hazelcast,env=prod"
+
 
 > kubectl label pods -l app=nginx tier=fe  
     Command to update label
@@ -143,3 +145,5 @@ spec:
     - containerPort: 80
 
 ```
+
+> kubectl get pods -o wide

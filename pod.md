@@ -112,6 +112,8 @@ status: {}
 
 > kubectl run mybusybox --image=busybox -o yaml -- sleep 3600 > busyboxpod.yaml
 
+> kubectl run -i -t upstox --image=upstox --restart=Never
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -162,6 +164,8 @@ Side car is useful in Service mesh ex: <a href="https://istio.io/latest/about/se
 
 Setting up hostanme and environment variable.
 
+kubectl run hazelcast --image=hazelcast/hazelcast --env="DNS_DOMAIN=cluster" --env="POD_NAMESPACE=default"
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -208,6 +212,13 @@ Entries added by HostAliases.
 192.168.1.140   test1.local     test2.local
 
 busybox-test
+
+
+# Cleaning up resource:
+- kubectl delete all
+- kubectl delete all --all
+- kubectl delete all --all --force --grace-period=-1
+    don't do force kill.
 
 
 

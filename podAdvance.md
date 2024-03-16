@@ -208,7 +208,7 @@ type: RollingUpdate
 
 Note : To know API Version - kubectl api-resources | grep deployment
 
-> kubectl port-forward  deployment.apps/myweb  32000:80
+> **kubectl port-forward  deployment.apps/myweb  32000:80**
     Expose service for testing  
 
 > kubectl get all --selector app=myweb
