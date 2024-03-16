@@ -196,7 +196,8 @@ Command line tool supports three way of creating and managing Kubernetes Object 
     * Harder to debug and understand results.
 
 
-Namespace : are a way to divide cluster resource between multiple users. We can specify resource limit. Namespace provide scope for names. Namespace are not nested.
+# Namespace : 
+Namespece are a way to divide cluster resource between multiple users. We can specify resource limit. Namespace provide scope for names. Namespace are not nested.
 
 Default namespaces:
 - default : For objects with no specified namespace

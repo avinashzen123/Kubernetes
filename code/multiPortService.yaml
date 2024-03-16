@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multiport
+  labels:
+    app: multiport
+spec:
+  containers:
+  - name: tomcat
+    image: tomcat
+    ports:
+      - containerPort: 8080
+  - name: nginx
+    image: nginx
+    ports:
+      - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  selector:
+    app: multiport
+  ports:
+  - port: 32000
+    targetPort: 80
+    name: nginxport
+  - port: 33000
+    targetPort: 8080
+    name: tomcatport 
