@@ -224,12 +224,16 @@ If a Pod with resource limits can not be scheduled, it will show a status of Pen
 
 we can use 'kubectl set resource ...' to apply resource limit to running applicaiton in deployments.
 
-**Quota**
-* Quota are restrictions that are applied to namespace.
-* If quota are set on a namespace, application started in that namespace must have resource
+**Memeory request :**   
+1G (Gigabyte) = 1,000,000,000 bytes  
+1M (Megabyte) = 1,000,000 bytes   
+1K (Kilobyte) = 1,000 bytes 
 
-> kubectl create ns restricted
-  kubectl create quota -n restricted --hard=cpu=2,memory=1G,pod=3
+1Gi (Gibibyte) = 1,073,741,824 bytes    
+1Mi (Mebibyte) = 1,048,576 bytes  
+1Ki (Kibibyte) = 1,024 bytes   
+
+In case of CPU, the system throttles the CPU so that it does nto go beyound the specified limit. A container can not use more CPU resources than its limit. However this is not the case with memory. A container can use more memory resource than its limit. So if a pod tries to consume more memory than limits consistently then POD will be terminated with OOM Error.
 
 ```yaml
     spec:
@@ -237,10 +241,118 @@ we can use 'kubectl set resource ...' to apply resource limit to running applica
       - name: naginx-cont
         image: nginx
         resources:
+          requests:
+            memory: "100Mi"
+            cpu: "500m"
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: 1
 ```
+
+**LimitRange** : LimitRange helps us define default values to be set for container in POD thatt are created without request of limit specified in Pod-definition file. This is applicable at namespace level.
+
+```yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-resource-constrain
+spec:
+  limits:
+    - default:
+        cpu: 500m
+        memory: 1Gi
+      defaultRequest:
+        cpu: 200m
+        memory: 1Gi
+      max:
+        cpu: "1"
+        memory: 1Gi
+      min:
+        cpu: 100m
+        memory: 1Gi
+      type: Container
+```
+
+**Resource Quota**
+* Quota are restrictions that are applied to namespace.
+* If quota are set on a namespace, application started in that namespace must have resource
+
+> kubectl create ns restricted
+  kubectl create quota -n restricted --hard=cpu=2,memory=1G,pod=3
+
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: namespace-quota
+  namespace: restricted
+spec:
+  hard:
+    requests.cpu: 2
+    requests.memory: 4Gi
+    limits.cpu: 4
+    limits.memory: 8Gi
+```
+
+# Taint and toleration
+Taints and Tolerance are used to set restrictions on what pods can be scheduled on a node 
+
+When pods are created Kubernetes scheduler tries to place these pods on the available worker nodes.  As there is no restriction or limitation, scheduler will try to place pods across all the nodes equally to balance them out equally. 
+
+Now lets us assume we have dedicated resource on a node for a particular use case or application so we would like only those pods that belongs to this application to be placed on that node.
+
+First we prevent all pods from being placed on that node by placing a taint on that node. By default pods have no toleration which means unless specified otherwise none of pod can tolerate any taint.
+
+Now we have to enable certain pods to be able to placed on that node. 
+
+kubectl taint nodes node-name key=value:taint-effect
+
+**taint-effect**
+- NoSchedule : Pods will not be scheduled on the node 
+- PreferNoSchedule : Which means the system will try to avoid placing pod on the node but is not guaranteed
+- NoExecute : Which means that new pods will not be scheduled on the node and existing pod on the node if any will be evicted if they don't tolerate the taint. 
+
+> kubectl taint nodes node1 app=blue:NoSchedule
+
+```yaml
+  containers:
+  - name: busybox
+    image: busybox
+    tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists" # Equal
+      effect: "NoSchedule"
+      value: blue
+```
+Note : Taint and Tolerance are only meant to restrict nodes from accepting certain pods 
+
+To remove taint from a node, run taint command and "-" at end.
+> kubectl taint nodes node1 app=blue:NoSchedule-
+
+
+
+# Node Selector 
+Let say we have three node cluster of which two node are smaller in terms of hardware resource. We have different kind of workloads running in our cluster. We would like to dedicate the data processing workload that require higher processing power to larger node as that is the only node which will not run Out of resources in case of job demands extra resource
+
+To solve this we need to add limitation on pod, which we can do in two ways:
+	- Node selector (simpler and easier)
+	- Node affinity.
+
+Before creating pod we must label node
+> kubectl label nodes <Node_name> <label_key>=<label_value>
+  kubectl label nodes node-1 size=Large
+
+```yaml
+spec:
+  nodeSelector:
+    size: Large
+  containers:
+  - name: busybox
+    image: busybox
+```
+**kubectl get pod --selector name=mypod** 
+NAME    READY   STATUS    RESTARTS   AGE  
+mypod   0/2     Pending   0          33s  
 
 # Cleaning up resource:
 - kubectl delete all
@@ -248,7 +360,34 @@ we can use 'kubectl set resource ...' to apply resource limit to running applica
 - kubectl delete all --all --force --grace-period=-1
     don't do force kill.
 
+# Node affinity
+Node affinity feature provides us with advanced capability to limit pod placement on specific node. 
+<a herf="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/">Assigning POD to Node</a>
 
+```yaml
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - antarctica-east1
+            - antarctica-west1
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: another-node-label-key
+            operator: In
+            values:
+            - another-node-label-value
+  containers:
+  - name: with-node-affinity
+    image: registry.k8s.io/pause:2.0
+```
 
 <hr/>
 
