@@ -6,28 +6,46 @@ metadata:
     name: myapp
 spec:
   volumes:
-  - name: logs
-    emptyDir: {}
+    - name: logs
+      emptyDir: {}
   containers:
-  - name: myapp
-    image: busybox
-    command: ['sh']
-    args: ['-c', 'while true; do echo $(date) >> /var/log/mydates.txt; sleep 10; done']
-    volumeMounts:
-    - name: logs
-      mountPath: /var/log
-    resources:
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
-  - name: sidecar
-    image: httpd
-    ports:
-    - containerPort: 80
-    volumeMounts:
-    - name: logs
-      mountPath: /usr/local/apache2/htdocs/
-    resources:
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
+    - name: myapp
+      image: busybox
+      command:
+        - sh
+      args:
+        - '-c'
+        - while true; do echo $(date) >> /var/log/mydates.txt; sleep 10; done
+      volumeMounts:
+        - name: logs
+          mountPath: /var/log
+      resources:
+        limits:
+          memory: 128Mi
+          cpu: 500m
+    - name: sidecar
+      image: httpd
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: logs
+          mountPath: /usr/local/apache2/htdocs/
+      resources:
+        limits:
+          memory: 128Mi
+          cpu: 500m
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  VirtualGateway:
+    Type: AWS::AppMesh::VirtualGateway
+    Properties:
+      MeshName: <String>
+      Spec:
+        Listeners:
+          - PortMapping:
+              Port: <Integer>
+              Protocol: <String>
+  Service:
+    Type: AWS::AppRunner::Service
+    Properties:
+      SourceConfiguration: {}
