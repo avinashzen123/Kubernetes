@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvcpod
+spec:
+  volumes:
+  - name: datavolume
+    persistentVolumeClaim:
+      claimName: my-pvc
+  containers:
+  - name: busyboxcont
+    image: busybox
+    command: ['/bin/sh']
+    args: ['-c','while true; do echo $(date) >> /data/dates.txt; sleep 10; done;']
+    volumeMounts:
+    - mountPath: /data
+      name: datavolume
