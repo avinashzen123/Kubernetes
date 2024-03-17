@@ -7,6 +7,7 @@ Containers are meant to be transient in nature which means that they are meant t
 
 
 ```yaml
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -125,8 +126,61 @@ spec:
 
 
 
+# Code
 
+```yaml
+# Volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-vol
+spec:
+  accessModes:
+    - ReadWriteMany
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: normal
+  hostPath:
+    path: /data
+```
 
+```yaml
+# Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  storageClassName: normal
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+```
+
+```yaml
+# Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvcpod
+spec:
+  volumes:
+  - name: datavolume
+    persistentVolumeClaim:
+      claimName: my-pvc
+  containers:
+  - name: busyboxcont
+    image: busybox
+    command: ['/bin/sh']
+    args: ['-c','while true; do echo $(date) >> /data/dates.txt; sleep 10; done;']
+    volumeMounts:
+    - mountPath: /data
+      name: datavolume
+```
 
 #
 
@@ -153,8 +207,6 @@ spec:
     - mountPath: /data
       name: data-volume
 ```
-
-
 
 
 

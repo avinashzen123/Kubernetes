@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmappod
+spec:
+  volumes:
+  - name: app-config-volume
+    configMap:
+      name: app-config
+  containers:
+  - name: busyboxpod
+    image: busybox
+    command: ['/bin/sh']
+    args: ['-c', 'while true; do echo $(date) > /dev/stdout; sleep 10; done']
+    volumeMounts:
+    - mountPath: /data/config
+      name: app-config-volume
+
+    # env:
+    #   - name: APP_COLOR
+    #     valueFrom:
+    #       configMapKeyRef:
+    #         name: app-config
+    #         key: APP_COLOR
+    # envFrom:
+    #   - configMapRef:
+    #       name: app-config

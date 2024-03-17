@@ -211,8 +211,16 @@ Default namespaces:
 > kubectl create namespaces <name>  
     kubectl create ns secret
 
+> kubectl ... -n namespace 
+        to work in specific namespace
+
+> kubectl get ... --all-namespaces 
+        to see resource in all namespaces
+
 > kubectl run --help  | less    
     To get help on a command
+
+> kubectl explain pod.metadata
 
 
     Kubectl run mydb --image=mariadb --env MYSQL_ROOT_PASSWORD=password

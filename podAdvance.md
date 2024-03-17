@@ -347,6 +347,7 @@ spec:
         - containerPort: 80
 ```
 
+If we want separate volume for each pod, each POD will need PVC for itself. We can achive this by "VolumeClaimTemplate". It is PersistentVolumeClaim instead it is just templatized. It just means instead of creating a PVC manually and then specifying it in the StatefulSet  definitino file, we can move the entire PVC Definitino into a section called "valueClaimTemplates" under the StatefulSet specification.
 
 ```yaml
 apiVersion: apps/v1
@@ -378,6 +379,7 @@ spec:
       name: www
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      storageClassName: google-storage #Optional, before that we need to create storage
       resources:
         requests:
           storage: 1Gi
@@ -390,6 +392,15 @@ pod/mystatefulset-1   1/1     Running   0          13s
 NAME                             READY   AGE  
 statefulset.apps/mystatefulset   2/2     16s  
 
+
+```yaml
+# StorageClass
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata: 
+  name: google-storage
+provisioner: kubernetes.io/gce-pd
+```
 
 
 # DaemonSet

@@ -9,7 +9,6 @@ spec:
   capacity:
     storage: 1Gi
   persistentVolumeReclaimPolicy: Recycle
-#  storageClassName: local-storage
   storageClassName: normal
   hostPath:
     path: /data
