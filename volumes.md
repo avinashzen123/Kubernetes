@@ -1,0 +1,1 @@
+Containers are meant to be transient in nature which means that they are meant to last only for short period of time. 
