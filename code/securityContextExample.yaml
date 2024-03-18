@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginxpod
+spec:
+  # securityContext:
+  #   fsGroup: 0
+  containers:
+  - name: nginxcont
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c","while true; do echo hello; touch \"/var/test$(date).text\"; sleep 10;done"]
+    resources: {}
+    securityContext:
+      # capabilities:
+      #   add: ["SYS_TIME"]
+      # privileged: true
+      # runAsUser: 0
+      # runAsGroup: 0
+      # allowPrivilegeEscalation: false
+      
+
