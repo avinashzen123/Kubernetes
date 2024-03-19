@@ -5,7 +5,7 @@ Kubernetes is an ecosystem providing core solution with many third party add-ons
 - Ingress
 - Monitoring
 - Packaging
-- man more.
+- many more.
 
 Kubernetes helps us in managing pod, monitoring pods, monitoring the containers in the pod, replacing failing pods and scaling pods.
 
