@@ -53,7 +53,7 @@ Controllers in kube-control manager :
 
 DNS : built in by default. (Core DNS)
 
-**Components of Kubernetes cluster **:
+**Components of Kubernetes cluster**:
 - API Server : Acts as frong end of Kubernetes. 
 
 

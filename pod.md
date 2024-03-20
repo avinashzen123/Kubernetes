@@ -249,6 +249,42 @@ In case of CPU, the system throttles the CPU so that it does nto go beyound the 
             cpu: 1
 ```
 
+# ResourceQuota
+
+When several users or teams share a cluster with a fixed number of nodes, there is a concern that one team could use more than its fair share of resources.
+
+Resource quotas are a tool for administrators to address this concern.
+
+**ResourceQuota** is for limiting the total resource consumption of a namespace, for example:
+
+> kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
+
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: object-counts
+spec:
+  hard:
+    configmaps: "10" 
+    persistentvolumeclaims: "4" 
+    replicationcontrollers: "20" 
+    secrets: "10" 
+    services: "10"
+```
+Compute Resource Quota
+
+|Resource Name |	Description|
+|-----------|----------------
+|limits.cpu |	Across all pods in a non-terminal state, the sum of CPU limits cannot exceed this value.|
+|limits.memory|	Across all pods in a non-terminal state, the sum of memory limits cannot exceed this value.|
+|requests.cpu|	Across all pods in a non-terminal state, the sum of CPU requests cannot exceed this value.|
+|requests.memory|	Across all pods in a non-terminal state, the sum of memory requests cannot exceed this value.|
+|hugepages-<size>|	Across all pods in a non-terminal state, the number of huge page requests of the specified size cannot exceed this value.|
+|cpu|	Same as requests.cpu|
+|memory|	Same as requests.memory|
+
+
 **LimitRange** : LimitRange helps us define default values to be set for container in POD thatt are created without request of limit specified in Pod-definition file. This is applicable at namespace level.
 
 ```yaml
@@ -294,7 +330,9 @@ spec:
     limits.memory: 8Gi
 ```
 
-# Taint and toleration
+#Pod Placement 
+
+**Taint and toleration**
 Taints and Tolerance are used to set restrictions on what pods can be scheduled on a node 
 
 When pods are created Kubernetes scheduler tries to place these pods on the available worker nodes.  As there is no restriction or limitation, scheduler will try to place pods across all the nodes equally to balance them out equally. 

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: resourcebusybox
+  name: resourcebusybox
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: resourcebusybox
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: resourcebusybox
+    spec:
+      containers:
+      - image: busybox
+        name: busybox
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: "1Gi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"

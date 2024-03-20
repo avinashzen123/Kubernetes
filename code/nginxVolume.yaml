@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  volumes:
+  - name: htmlvol
+    emptyDir: {}
+  initContainers:
+  - image: busybox
+    name: busybox
+    args:
+    - '/bin/sh'
+    - '-c'
+    - 'wget -o /work_dir/index.html https://www.google.com'
+    volumeMounts:
+    - name: htmlvol
+      mountPath: /work_dir
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts:
+    - name: htmlvol
+      mountPath: /usr/share/nginx/html
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

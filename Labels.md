@@ -71,6 +71,7 @@ pod/simple-webapp-cm9s7 labeled
 pod/simple-webapp-hxdwl labeled
 pod/simple-webapp-t4266 labeled
 
+Get pod where app = App1 and there is lable named "tier"
 **kubectl get pods -l app=App1 -L tier** 
 NAME                  READY   STATUS    RESTARTS        AGE     TIER
 simple-webapp-cm9s7   1/1     Running   1 (6h53m ago)   7h39m   fe
@@ -82,12 +83,17 @@ simple-webapp-cm9s7   1/1     Running   1 (6h53m ago)   7h39m
 simple-webapp-hxdwl   1/1     Running   1 (6h53m ago)   7h39m 
 simple-webapp-t4266   1/1     Running   1 (6h53m ago)   7h39m   
 **kubectl label pods -l app=App1 environment=dev tier=frontend --overwrite**
+  Will search for pod where lable app = App1 the set environment and tier
+
+
 **kubectl get pods -l environment=dev,tier=frontend** 
 'NAME                  READY   STATUS    RESTARTS        AGE
 simple-webapp-cm9s7   1/1     Running   1 (6h59m ago)   7h44m 
 simple-webapp-hxdwl   1/1     Running   1 (6h59m ago)   7h44m 
 simple-webapp-t4266   1/1     Running   1 (6h59m ago)   7h44m   
+
 **kubectl get pods -l 'environment in (dev), tier in (frontend)'**
+
 NAME                  READY   STATUS    RESTARTS        AGE
 simple-webapp-cm9s7   1/1     Running   1 (6h59m ago)   7h45m 
 simple-webapp-hxdwl   1/1     Running   1 (6h59m ago)   7h45m 

@@ -208,6 +208,35 @@ spec:
       name: data-volume
 ```
 
+Multi container volume share emptyDir
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: podvolume
+  name: podvolume
+spec:
+  volumes:
+  - name: data-volume
+    hostPath:
+      path: /data
+      type: Directory
+  containers:
+  - image: busybox
+    name: podvolume
+    command: ['/bin/sh']
+    args: ['-c', "while true; do data > /data/dates.txt; sleep 10; done"]
+    volumeMounts:
+    - mountPath: /data
+      name: data-volume
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+```
 
 
 ```yaml
