@@ -2,6 +2,9 @@
 
 > kubectl create namespace myns -o yaml --dry-run=client
 
+> kubectl config set context --current --namespace=myns
+
+# Create quota
 > kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
 
 > kubectl get po --all-namespaces
@@ -14,11 +17,20 @@
 > kubectl run busybox --image=busybox --restart=Never --dry-run=client -o yaml --command -- env > envpod.yaml
 
 > kubectl set image pod/nginx nginx=nginx:1.7.1
+> kubectl set image pod -l run=nginx  nginx=nginx:1.7.1
 
 to check pods image of running container .
     kubectl get po nginx -o jsonpath='{.spec.containers[].image}{"\n"}'
 
-
+```sh
+kubectl run busybox --image=busybox -n $ns --restart=Never --command -- wget $( kubectl get pod nginx -o yaml -n  $ns  | grep  podIP: | sed 's/podIP://' ):80
+```
+```sh
+kubectl run busybox --image=busybox -n $ns --restart=Never --command -- wget $( kubectl get po nginx -o jsonpath='{.status.podIP}{"\n"}' -n $ns ):80
+```
+```sh
+kubectl run busybox --image=busybox --rm --restart=Never -n $ns -it  --command -- wget $( kubectl get pod nginx -n $ns -o jsonpath='{.status.podIP}{"\n"}' ):80 
+```
 > kubectl get po nginx -w
     To watch pods creation
 
@@ -67,6 +79,8 @@ kubectl describe po nginx | grep val1
 
 kubectl run nginx --restart=Never --image=nginx --env=var1=val1 -it --rm -- env
 
+kubectl run busybox --image=busybox -n $ns --rm -it --restart=Never --env=var1=val1 -- env
+
 kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -c 'echo $var1'
 
 
@@ -75,6 +89,8 @@ kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -
     kubectl run nginx3 --image=nginx --restart=Never --labels=app=v1
     # or
     for i in `seq 1 3`; do kubectl run nginx$i --image=nginx -l app=v1 ; done
+
+    for i in $(seq 1 3); do kubectl run nginx$i --image=nginx --restart=Never --labels="app=v1" -n $ns; done;
 
 > Show all labels
     kubectl get po --show-labels
@@ -95,6 +111,7 @@ kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -
     kubectl label po nginx1 nginx2 nginx3 app-
     kubectl label po nginx{1..3} app-
     kubectl label po -l app app-
+    
 
 
 # Annotation
@@ -113,11 +130,27 @@ kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -
 > Remove annotation
     kubectl annotate po nginx{1..3} description- owner-
 
+    kubectl describe pod nginx{1,2,3} -n $ns  | grep -i annotations
+
 > Delete pod
     kubectl delete po nginx{1..3}
 
 
 # Pod Placement
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  nodeName: foo-node # schedule pod to specific node
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+
+```
 
 > Node selector
 ```yaml
@@ -163,6 +196,8 @@ Taint a node with key tier and value frontend with the effect NoSchedule. Then, 
 
     kubectl taint node node1 tier=frontend:NoSchedule # key=value:Effect
     kubectl describe node node1 # view the taints on a node
+
+    kubectl get node docker-desktop -o jsonpath='{.spec.taints}'
 
 ```yaml
 apiVersion: v1
@@ -285,6 +320,20 @@ spec:
     kubectl set image deploy nginx nginx=nginx:1.19.8
     #. alternatively...
     kubectl edit deploy nginx # change the .spec.template.spec.containers[0].image
+
+Get image name of pod
+kubectl get pod nginxdeploy-6f868d8cf9-kq425 -o jsonpath='{.spec.containers[0].image}{"\n"}'
+
+get image name of deployment
+kubectl get deploy nginxdeploy  -o jsonpath='{.spec..spec.containers[].image}{"\n"}'
+
+
+> Scale the deployment to 5 replicas
+  kubectl scale deploy nginx --replicas=5
+  or 
+  kubectl edit deploy nginx > change replicas to 5
+
+
 
 
 # Job
@@ -417,6 +466,12 @@ kubectl delete po busybox --force --grace-period=0
 
 > CPU Memory Utilization
     kubectl top nodes
+
+kubectl run nginx --image=nginx --restart=Never --port=80 --expose
+
+kubectl set env
+
+kubectl explain --recursive deployment.spec.strategy
 
 
 https://github.com/dgkanatsios/CKAD-exercises/blob/main/d.configuration.md
