@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: envpod
+  labels:
+    name: envpod
+spec:
+  containers:
+  - name: envcont
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args: 
+    - while true; do
+      echo -en '\n';
+      printenv MYVAR MYVAR2; 
+      echo $(date);
+      sleep 10;
+      done;
+    env:
+      - name: MYVAR
+        value: "Hello World"
+      - name: MYVAR2
+        value: "Hello World 2"
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: <Port>
