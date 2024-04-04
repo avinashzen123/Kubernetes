@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: emptydirvol
+  name: emptydirvol
+spec:
+  volumes:
+  - name: cache
+    emptyDir: 
+      sizeLimit: 100Mi
+  containers:
+  - image: busybox
+    name: emptydirvol
+    command: ['/bin/sh', '-c', 'while true; do echo "Print From vol" && tail -f /dev/null; done;']
+    volumeMounts:
+    - name: cache
+      mountPath: /cache
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
