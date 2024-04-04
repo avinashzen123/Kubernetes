@@ -15,17 +15,17 @@ spec:
         value: admin
       - name: MONGO_INITDB_ROOT_PASSWORD
         value: admin 
-    # livenessProbe:
-    #   exec:
-    #     command:
-    #       - mongo
-    #       - --eval
-    #       - "db.adminCommand('ping')"
-    #   initialDelaySeconds: 1
-    #   periodSeconds: 10
-    #   timeoutSeconds: 5
-    #   successThreshold: 1
-    #   failureThreshold: 2
+    readinessProbe:
+      exec:
+        command:
+          - mongosh
+          - --eval
+          - "db.adminCommand('ping')"
+      initialDelaySeconds: 1
+      periodSeconds: 10
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 2
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
