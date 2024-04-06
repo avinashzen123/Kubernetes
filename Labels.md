@@ -63,70 +63,72 @@ spec:
 
 ```
 
-> kubectl get pods --selector environment=dev --show-labels
-    To view current labels
+> kubectl get pods --selector environment=dev --show-labels 
+    To view current labels  
 
 **kubectl label pods -l app=App1 tier=fe**
-pod/simple-webapp-cm9s7 labeled
-pod/simple-webapp-hxdwl labeled
-pod/simple-webapp-t4266 labeled
+pod/simple-webapp-cm9s7 labeled 
+pod/simple-webapp-hxdwl labeled 
+pod/simple-webapp-t4266 labeled 
 
-Get pod where app = App1 and there is lable named "tier"
-**kubectl get pods -l app=App1 -L tier** 
-NAME                  READY   STATUS    RESTARTS        AGE     TIER
-simple-webapp-cm9s7   1/1     Running   1 (6h53m ago)   7h39m   fe
-simple-webapp-hxdwl   1/1     Running   1 (6h53m ago)   7h39m   fe
-simple-webapp-t4266   1/1     Running   1 (6h53m ago)   7h39m   fe    
-**kubectl get pods -l app=App1**      
-NAME                  READY   STATUS    RESTARTS        AGE
-simple-webapp-cm9s7   1/1     Running   1 (6h53m ago)   7h39m   
-simple-webapp-hxdwl   1/1     Running   1 (6h53m ago)   7h39m 
-simple-webapp-t4266   1/1     Running   1 (6h53m ago)   7h39m   
-**kubectl label pods -l app=App1 environment=dev tier=frontend --overwrite**
-  Will search for pod where lable app = App1 the set environment and tier
+Get pod where app = App1 and there is lable named "tier"  
+**kubectl get pods -l app=App1 -L tier**  
+NAME                  READY   STATUS    RESTARTS        AGE     TIER  
+simple-webapp-cm9s7   1/1     Running   1 (6h53m ago)   7h39m   fe  
+simple-webapp-hxdwl   1/1     Running   1 (6h53m ago)   7h39m   fe  
+simple-webapp-t4266   1/1     Running   1 (6h53m ago)   7h39m   fe      
+
+**kubectl get pods -l app=App1**        
+NAME                  READY   STATUS    RESTARTS        AGE 
+simple-webapp-cm9s7   1/1     Running   1 (6h53m ago)   7h39m    
+simple-webapp-hxdwl   1/1     Running   1 (6h53m ago)   7h39m   
+simple-webapp-t4266   1/1     Running   1 (6h53m ago)   7h39m    
+
+**kubectl label pods -l app=App1 environment=dev tier=frontend --overwrite**  
+  Will search for pod where lable app = App1 the set environment and tier 
 
 
-**kubectl get pods -l environment=dev,tier=frontend** 
-'NAME                  READY   STATUS    RESTARTS        AGE
-simple-webapp-cm9s7   1/1     Running   1 (6h59m ago)   7h44m 
-simple-webapp-hxdwl   1/1     Running   1 (6h59m ago)   7h44m 
-simple-webapp-t4266   1/1     Running   1 (6h59m ago)   7h44m   
+**kubectl get pods -l environment=dev,tier=frontend**  
+'NAME                  READY   STATUS    RESTARTS        AGE  
+simple-webapp-cm9s7   1/1     Running   1 (6h59m ago)   7h44m   
+simple-webapp-hxdwl   1/1     Running   1 (6h59m ago)   7h44m   
+simple-webapp-t4266   1/1     Running   1 (6h59m ago)   7h44m     
 
-**kubectl get pods -l 'environment in (dev), tier in (frontend)'**
+**kubectl get pods -l 'environment in (dev), tier in (frontend)'**  
 
-NAME                  READY   STATUS    RESTARTS        AGE
-simple-webapp-cm9s7   1/1     Running   1 (6h59m ago)   7h45m 
-simple-webapp-hxdwl   1/1     Running   1 (6h59m ago)   7h45m 
+NAME                  READY   STATUS    RESTARTS        AGE 
+simple-webapp-cm9s7   1/1     Running   1 (6h59m ago)   7h45m  
+simple-webapp-hxdwl   1/1     Running   1 (6h59m ago)   7h45m   
 simple-webapp-t4266   1/1     Running   1 (6h59m ago)   7h45m 
 **kubectl get pods -l 'environment in (dev), tier notin (backend)'**
-NAME                  READY   STATUS    RESTARTS     AGE
-simple-webapp-cm9s7   1/1     Running   1 (7h ago)   7h45m  
-simple-webapp-hxdwl   1/1     Running   1 (7h ago)   7h45m  
+NAME                  READY   STATUS    RESTARTS     AGE  
+simple-webapp-cm9s7   1/1     Running   1 (7h ago)   7h45m    
+simple-webapp-hxdwl   1/1     Running   1 (7h ago)   7h45m    
 simple-webapp-t4266   1/1     Running   1 (7h ago)   7h45m  
 
-**kubectl get pods --selector environment=dev**
+**kubectl get pods --selector environment=dev** 
 NAME                  READY   STATUS    RESTARTS   AGE  
 simple-webapp-6wmjv   1/1     Running   0          11m  
 simple-webapp-86c69   1/1     Running   0          11m  
 simple-webapp-glndl   1/1     Running   0          11m  
 
-**exists example**
-**kubectl get pods -l 'app'**       
-NAME                  READY   STATUS    RESTARTS   AGE
-simple-webapp-6wmjv   1/1     Running   0          4m31s  
-simple-webapp-86c69   1/1     Running   0          4m31s  
+**exists example**  
+**kubectl get pods -l 'app'**        
+NAME                  READY   STATUS    RESTARTS   AGE  
+simple-webapp-6wmjv   1/1     Running   0          4m31s    
+simple-webapp-86c69   1/1     Running   0          4m31s   
 simple-webapp-glndl   1/1     Running   0          4m31s  
-**kubectl get pods -l '!app'**
-No resources found in default namespace.  
+**kubectl get pods -l '!app'**  
+No resources found in default namespace.    
 
 
-> kubectl get pods -Lapp -Ltier -Lrole  
-    To print lable in command output
+> kubectl get pods -Lapp -Ltier -L role   
+    To print lable in command output  
 
-> kubectl create deploy bluelabel --image=nginx   
-    Creates pod with label app=bluelabel
+> kubectl create deploy bluelabel --image=nginx    
+    Creates pod with label app=bluelabel  
 
-### To remove label use 'key-'
+### To remove label use 'key-'  
 **kubectl label pods -l app=App1 environment=dev tier-**       
 pod/simple-webapp-6wmjv unlabeled 
 pod/simple-webapp-86c69 unlabeled 

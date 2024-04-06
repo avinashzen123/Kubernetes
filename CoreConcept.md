@@ -17,7 +17,7 @@ Node is cluster can function as
 
 Cluster is a group of node grouped together.
 
-Master is a kubernetes node which wathes over the nodes in the cluster and is responsible for actual orchestration of container on the worker node.
+Master is a kubernetes node which watches over the nodes in the cluster and is responsible for actual orchestration of container on the worker node.
 
 Cluster components
 - Master components
@@ -54,11 +54,11 @@ Controllers in kube-control manager :
 DNS : built in by default. (Core DNS)
 
 **Components of Kubernetes cluster**:
-- API Server : Acts as frong end of Kubernetes. 
+- API Server : Acts as front end of Kubernetes. 
 
 
 
-Kubernetes Container abstractions :
+**Kubernetes Container abstractions :**
 - Pod : One or more container running together on one node. Basic unit of deployment. WE don't deploy container directly inside container we deploy pod.
 - Controller : For creating/updating pods and other objects. Many type of controller inlcudes Deployment, ReplicaSet, StatefulSet, DaemonSet, Job, CronJob etc.
 - Service : Network endpoint to connect to a POD.  Kubernetes Service is a logical abstraction for deployment groups of pods. 
@@ -125,7 +125,7 @@ Resources are deleted in two phases:
 
 
 ### PODS :
-- Sinlge or Multiple container
+- Single or Multiple container
     * init containers and app container
 - Storage resources 
     * Shared storage volumes
@@ -241,6 +241,9 @@ Default namespaces:
 > kubectl exec -it <Pod_name> -- sh    
     To get terminal on running container . If pod has more than one container    
     kubectl exec -it <Pod_name> -c <Container_Name> -- sh
+
+> kubectl run busybox --image=busybox -it --rm --command -- sh
+    To start a container is interactive terminal and delete after stopping container.
 
 Note : /proc
 
