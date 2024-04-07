@@ -68,6 +68,8 @@ activeDeadlineSeconds: Maximum duration the job can run.
 
 # Cron job
 
+<a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">Cron Expression</a>
+
 kubectl create  cronjob throw-dice-cron-job  --image=kodekloud/throw-dice --schedule="30 21 * * *"  --dry-run=client -o yaml >  throw-dice-cron-job.yaml
 
 ```yaml
@@ -93,10 +95,24 @@ status: {}
 ```
 
 schedule: Scheduled time for cron job to be creaetd and executed 
+
 successfulJobsHistoryLimit: how many successfully completed jobs should be kept in job history
+
+failedJobsHistoryLimit: These fields specify how many completed and failed Jobs should be kept.
+
 suspend       <boolean>
     This flag tells the controller to suspend subsequent executions, it does not
     apply to already started executions.  Defaults to false.
+
+startingDeadlineSeconds: 
+
+Caution: If startingDeadlineSeconds is set to a value less than 10 seconds, the CronJob may not be scheduled. This is because the CronJob controller checks things every 10 seconds.
+
+
+concurrencyPolicy:
+- Allow
+- Forbid
+- Replace
 
 
 > kubectl create job test-job --from=cronjob/a-cronjob  
@@ -148,9 +164,9 @@ spec:
 
 If we delete any pod which is managed by deployment, deployment will create replacement of that pod.
 
-**kubectl get all**
-NAME                        READY   STATUS    RESTARTS   AGE    
-pod/myweb-9794cbc77-nxhnr   1/1     Running   0          2m47s  
+**kubectl get all** 
+NAME                        READY   STATUS    RESTARTS   AGE     
+pod/myweb-9794cbc77-nxhnr   1/1     Running   0          2m47s   
 pod/myweb-9794cbc77-rq6tp   1/1     Running   0          2m47s  
 pod/myweb-9794cbc77-xspl7   1/1     Running   0          2m47s  
 
@@ -162,8 +178,9 @@ deployment.apps/myweb   3/3     3            3           2m47s
 
 NAME                              DESIRED   CURRENT   READY   AGE   
 replicaset.apps/myweb-9794cbc77   3         3         3       2m47s 
-**kubectl delete pod/myweb-9794cbc77-xspl7**
-pod "myweb-9794cbc77-xspl7" deleted 
+**kubectl delete pod/myweb-9794cbc77-xspl7**  
+pod "myweb-9794cbc77-xspl7" deleted   
+
 **kubectl get all**                         
 NAME                        READY   STATUS              RESTARTS   AGE  
 pod/myweb-9794cbc77-f7trc   0/1     ContainerCreating   0          2s   
@@ -184,7 +201,7 @@ After deployment was introduced, scalability is managed through Deployment and n
 
 **Deployment updates.** 
 -  We can execute command
-     kubectl scale deployment myweb --replicas=4
+     *kubectl scale deployment myweb --replicas=4*
 - We can edit deployment using 'kubectl edit deployment myweb' command and change value of 'replicas' and set value. 
     Note with 'edit' command only editable properties can be changed.
 - kubectl set image deployment myweb nginx=nginx:1.17
@@ -254,7 +271,8 @@ Pod Template:
     Mounts:     <none>  
   Volumes:      <none>            
 
-**kubectl rollout undo** to undo previous change
+**kubectl rollout undo** 
+  to undo previous change   
 kubectl rollout undo deployment myweb --to-revision=1
 
 **kubectl rollout -h | less**

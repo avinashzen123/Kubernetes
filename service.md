@@ -229,7 +229,7 @@ kubectl create service clusterip my-cs --clusterip="None"
 # Ingress
 
 - Ingress is used to provide external access to internal Kubernetes cluster resources. 
-- To do so, Ingressuses a load balancer thatt is present on the external cluster
+- To do so, Ingress uses a load balancer that is present on the external cluster
 - This load balancer is implemented by the ingress controller.
 - As an API resource, Ingress uses selector labels to connect to Pods that are used as a Service endpint.
 - To access resource in the cluster, DNS must be configured to resolve to the ingress load balancer IP.

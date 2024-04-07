@@ -33,13 +33,18 @@ kubectl describe pods <<Pod_name>>
 Above all parts of the *pod.spec.container.spec* which can be checked with *kubectl explain*
 
 
-```
+```cmd
 kubectl explain pod | less
 kubectl explain pod.spec | less
 
 To view different parameters we user --recursive 
 
 kubectl explain --recursive pod | less
+```
+
+
+```cmd
+kubectl run busybox --image=busybox --labels="app=busybox,env=prod" --command -- /bin/sh -c "while sleep 10; do printenv; echo "--------"; done;"
 ```
 
 ```yaml
